@@ -1,0 +1,3 @@
+#issue_id	project_id	subject	description	assigned_to_id	category_id	fixed_version_id	starte_date	due_date	estimated_hours
+3351	20	テスト_バグ4修正	詳細。改行は非対応	3	4	3	2012/12/05	2012/12/06	3
+3352	20	test_issue3			3	3			2

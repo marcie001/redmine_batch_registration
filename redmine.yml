@@ -1,0 +1,5 @@
+use_ssl: false
+host: redmine.qusco.cc
+key: your_api_key
+basic_id:
+basic_password:
