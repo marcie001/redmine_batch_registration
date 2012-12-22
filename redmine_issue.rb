@@ -1,9 +1,11 @@
 #! /usr/bin/env ruby
 # -*- encoding: utf-8 -*-
 # 対話型 Redmine クライアント
-require './redmine_client'
 require 'yaml'
 require 'pp'
+require 'readline'
+require './history'
+require './redmine_client'
 
 def handle_all(client, kind, identifier, &block) 
   offset = 0
@@ -24,8 +26,7 @@ end
 
 def gets_identifier
   while true
-    print 'project identifier '
-    identifier = STDIN.gets.chomp
+    identifier = history.readline 'project identifier '
     return identifier unless identifier.empty?
   end
 end
@@ -39,6 +40,7 @@ kinds = {
 }
 redmine = YAML.load_file './redmine.yml'
 client = RedmineClient.new redmine
+history = History.new
 while true do
   print "[c]Create Issues\n"
   print "[u]Update Issues\n"
@@ -51,28 +53,24 @@ while true do
   print "[90]List Issues(50 issues)(alpha)\n"
   print "[q]quit\n"
 
-  print 'What would you like to do?[c/u/1/2/3/4/5/6/90/q]'
-  command = STDIN.gets.chomp.downcase
+  command = history.readline 'What would you like to do?[c/u/1/2/3/4/5/6/90/q]'
   case command
   when "c"
-    print 'path to issues file[./issues.tsv]'
-    file = STDIN.gets.chomp.downcase
+    file = history.readline 'path to issues file[./issues.tsv]'
     file = './issues.tsv' if file.empty?
-    result = client.post_issues file
+    result = client.post_issues(File::expand_path(file))
     result.each do |v|
       pp v
     end
   when "u"
-    print 'path to issues file[./update_issues.tsv]'
-    file = STDIN.gets.chomp.downcase
+    file = history.readline 'path to issues file[./update_issues.tsv]'
     file = './update_issues.tsv' if file.empty?
-    result = client.put_issues file
+    result = client.put_issues(File::expand_path(file))
     result.each do |v|
       pp v
     end
   when "1"
-    print 'project identifier(if you list all projects, input empty)[]'
-    identifier = STDIN.gets.chomp
+    identifier = history.readline 'project identifier(if you list all projects, input empty)[]'
     if identifier.empty? 
       handle_all(client, kinds[command], nil) do |project|
         print "#{project['id']}    #{project['name']}(#{project['identifier']})\n"
