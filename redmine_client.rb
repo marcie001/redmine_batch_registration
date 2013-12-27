@@ -11,7 +11,7 @@ module JSONClient
 
   def get(path, params = {})
     res = Net::HTTP.start(@host, @port, :use_ssl => @use_ssl) do |http|
-      get = Net::HTTP::Get.new "#{path}.json" + parse_to_param_string(params)
+      get = Net::HTTP::Get.new "#{@subdirectory}#{path}.json" + parse_to_param_string(params)
       get.basic_auth @basic_id, @basic_password unless @basic_id.nil?
       get['X-Redmine-API-Key'] = @key
       get['Content-Type'] = 'application/json'
@@ -28,7 +28,7 @@ module JSONClient
 
   def post(path, params, body)
     res = Net::HTTP.start(@host, @port, :use_ssl => @use_ssl) do |http|
-      post = Net::HTTP::Post.new "#{path}.json" + parse_to_param_string(params)
+      post = Net::HTTP::Post.new "#{@subdirectory}#{path}.json" + parse_to_param_string(params)
       post.basic_auth @basic_id, @basic_password unless @basic_id.nil?
       post.body = body
       post['X-Redmine-API-Key'] = @key
@@ -46,7 +46,7 @@ module JSONClient
 
   def put(path, params, body)
     res = Net::HTTP.start(@host, @port, :use_ssl => @use_ssl) do |http|
-      put = Net::HTTP::Put.new "#{path}.json" + parse_to_param_string(params)
+      put = Net::HTTP::Put.new "#{@subdirectory}#{path}.json" + parse_to_param_string(params)
       put.basic_auth @basic_id, @basic_password unless @basic_id.nil?
       put.body = body
       put['X-Redmine-API-Key'] = @key
@@ -83,6 +83,7 @@ class RedmineClient
     @key = redmine['key']
     @basic_id = redmine['basic_id']
     @basic_password = redmine['basic_password']
+    @subdirectory = redmine['subdirectory']
   end
     
   def post_issues(file_path)

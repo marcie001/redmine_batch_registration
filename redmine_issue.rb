@@ -24,7 +24,7 @@ def handle_all(client, kind, identifier, &block)
   end while ret['total_count'] > offset
 end
 
-def gets_identifier
+def gets_identifier(history)
   while true
     identifier = history.readline 'project identifier '
     return identifier unless identifier.empty?
@@ -80,12 +80,12 @@ while true do
       print "#{project['id']}    #{project['name']}(#{project['identifier']})\n"
     end
   when "2"
-    identifier = gets_identifier
+    identifier = gets_identifier history
     handle_all(client, kinds[command], identifier) do |version|
       print "#{version['id']}    #{version['name']}\n"
     end 
   when "3"
-    identifier = gets_identifier
+    identifier = gets_identifier history
     handle_all(client, kinds[command], identifier) do |category|
       print "#{category['id']}    #{category['name']}\n"
     end 
@@ -106,7 +106,7 @@ while true do
       print "#{status['id']}    #{status['name']}\n"
     end 
   when "90"
-    identifier = gets_identifier
+    identifier = gets_identifier history
     offset = 0
     limit = 50
     issues = client.get_issues identifier, offset, limit

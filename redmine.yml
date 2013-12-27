@@ -1,5 +1,6 @@
 use_ssl: false
-host: redmine.qusco.cc
+host: redmine.example.com
 key: your_api_key
 basic_id:
 basic_password:
+subdirectory: /redmine
